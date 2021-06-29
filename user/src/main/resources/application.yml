@@ -1,0 +1,9 @@
+quarkus:
+  datasource:
+    db-kind: postgresql
+    username: ${DB_USER:app_user}
+    password: ${DB_PASSWORD:app_user}
+    jdbc:
+      url: jdbc:postgresql://${DB_HOST:localhost:15432}/${DB_DATABASE:app_user}
+      max-size: 8
+      min-size: 2
