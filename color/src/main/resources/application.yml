@@ -6,6 +6,10 @@ amqp-host: ${AMQP_HOST:localhost}
 amqp-port: ${AMQP_PORT:5672}
 amqp-username: ${AMQP_USERNAME:quarkus}
 amqp-password: ${AMQP_PASSWORD:quarkus}
+kafka:
+  bootstrap:
+    servers:
+      - localhost:9092
 quarkus:
   datasource:
     db-kind: postgresql
@@ -22,3 +26,9 @@ mp:
         connector: smallrye-amqp
         durable: true
         use-anonymous-sender: false
+    outgoing:
+      kafka-new-color-created-channel:
+        connector: smallrye-kafka
+        topic: kafka-new-color-created-channel
+        value:
+          serializer: io.quarkus.kafka.client.serialization.ObjectMapperSerializer
