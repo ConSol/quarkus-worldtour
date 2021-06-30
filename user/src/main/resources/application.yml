@@ -1,3 +1,7 @@
+amqp-host: ${AMQP_HOST:localhost}
+amqp-port: ${AMQP_PORT:5672}
+amqp-username: ${AMQP_USERNAME:quarkus}
+amqp-password: ${AMQP_PASSWORD:quarkus}
 quarkus:
   datasource:
     db-kind: postgresql
@@ -7,3 +11,10 @@ quarkus:
       url: jdbc:postgresql://${DB_HOST:localhost:15432}/${DB_DATABASE:app_user}
       max-size: 8
       min-size: 2
+mp:
+  messaging:
+    outgoing:
+      jms-new-color-channel:
+        connector: smallrye-amqp
+        durable: true
+        use-anonymous-sender: false
