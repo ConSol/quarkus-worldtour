@@ -10,3 +10,12 @@ services:
       - POSTGRES_DB=postgres
     ports:
       - '15432:5432'
+  jms:
+    image: vromero/activemq-artemis:2.8.0-alpine
+    ports:
+      - "8161:8161"
+      - "61616:61616"
+      - "5672:5672"
+    environment:
+      ARTEMIS_USERNAME: quarkus
+      ARTEMIS_PASSWORD: quarkus
