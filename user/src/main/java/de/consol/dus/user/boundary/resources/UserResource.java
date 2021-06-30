@@ -5,7 +5,9 @@ import de.consol.dus.user.boundary.exceptions.NoSuchUserException;
 import de.consol.dus.user.boundary.exceptions.UserWithUsernameAlreadyExistsException;
 import de.consol.dus.user.boundary.transfer.request.CreateNewUserRequest;
 import de.consol.dus.user.boundary.transfer.request.UpdateUserRequest;
+import io.quarkus.security.Authenticated;
 import java.net.URI;
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
@@ -30,12 +32,14 @@ public class UserResource {
   private final UserService userService;
 
   @GET
+  @Authenticated
   public Response findAllUsers() {
     return Response.ok(userService.findAll()).build();
   }
 
   @GET
   @Path("{username}")
+  @Authenticated
   public Response findUserByUsername(@PathParam("username") String username) {
     return Response
         .ok(userService.findByUsername(username)
@@ -44,6 +48,7 @@ public class UserResource {
   }
 
   @POST
+  @RolesAllowed("admin")
   public Response createNewUser(CreateNewUserRequest request) {
     final String username = request.getUsername();
     if (userService.findByUsername(username).isPresent()) {
@@ -58,6 +63,7 @@ public class UserResource {
 
   @PUT
   @Path("{username}")
+  @RolesAllowed("admin")
   public Response updateUser(
       @PathParam("username") @Size(min = 3, max = 255) String username,
       @Valid UpdateUserRequest request) {
