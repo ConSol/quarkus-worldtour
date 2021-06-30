@@ -1,6 +1,7 @@
 package de.consol.dus.user;
 
 import de.consol.dus.user.boundary.exceptions.UsernameOfUserCannotBeChangedException;
+import de.consol.dus.user.boundary.messaging.jms.outgoing.NewColorEmitter;
 import de.consol.dus.user.boundary.persistence.ColorRepository;
 import de.consol.dus.user.boundary.persistence.UserRepository;
 import de.consol.dus.user.boundary.transfer.request.CreateNewUserRequest;
@@ -26,6 +27,7 @@ public class UserService {
   private final ColorMapper colorMapper;
   private final UserRepository userRepository;
   private final ColorRepository colorRepository;
+  private final NewColorEmitter newColorEmitter;
 
   public List<UserResponse> findAll() {
     return userRepository.findAll().stream()
@@ -65,9 +67,9 @@ public class UserService {
   }
 
   private Color getOrCreateColor(ColorResponse color) {
-    final Optional<String> maybeFavoriteColorName
-        = Optional.ofNullable(color).map(ColorResponse::getName);
-    return maybeFavoriteColorName
+    return Optional.ofNullable(color)
+        .map(newColorEmitter::emit)
+        .map(ColorResponse::getName)
         .map(s -> colorRepository.findByName(s)
             .orElse(colorMapper.colorResponseToColor(color)))
         .map(colorRepository::save)
