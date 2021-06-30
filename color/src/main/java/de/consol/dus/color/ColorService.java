@@ -1,6 +1,7 @@
 package de.consol.dus.color;
 
 import de.consol.dus.color.boundary.exceptions.NameOfColorCannotBeChangedException;
+import de.consol.dus.color.boundary.messaging.kafka.outgoing.NewColorCreatedEmitter;
 import de.consol.dus.color.boundary.persistence.ColorRepository;
 import de.consol.dus.color.boundary.transfer.request.CreateNewColorRequest;
 import de.consol.dus.color.boundary.transfer.request.UpdateColorRequest;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class ColorService {
   private final ColorMapper colorMapper;
   private final ColorRepository colorRepository;
+  private final NewColorCreatedEmitter emitter;
 
   public List<ColorResponse> findAllColors() {
     return colorRepository.findAll().stream()
@@ -35,6 +37,7 @@ public class ColorService {
   public ColorResponse createNewColor(CreateNewColorRequest request) {
     final Color color = colorMapper.requestToEntity(request);
     final Color saved = colorRepository.save(color);
+    emitter.emit(request.getName());
     return colorMapper.entityToResponse(saved);
   }
 
