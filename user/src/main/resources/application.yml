@@ -7,3 +7,18 @@ quarkus:
       url: jdbc:postgresql://${DB_HOST:localhost:15432}/${DB_DATABASE:app_user}
       max-size: 8
       min-size: 2
+  oidc:
+    enabled: true
+    application-type: SERVICE
+    auth-server-url: ${OIDC_SERVER_URL:http://localhost:8090/auth/realms/persons}
+    client-id: ${OIDC_CLIENT_ID:persons-service}
+    roles:
+      role-claim-path: ${OIDC_ROLES_PATH:roles}
+    introspection-path: /protocol/openid-connect/userinfo
+    jwks-path: /protocol/openid-connect/certs
+    token:
+      issuer: ${ISSUER_URL:http://oidc-service:8080/auth/realms/persons}
+      audience: persons-service
+      principal-claim: preferred_username
+    credentials:
+      secret: ${OIDC_USER_SERVICE_CLIENT_SECRET:29abef59-4a3f-46a4-a974-d4f3c2b625ac}
